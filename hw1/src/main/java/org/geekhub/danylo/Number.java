@@ -9,11 +9,12 @@ public class Number {
         Scanner in = new Scanner(System.in);
         System.out.print("Input your telephone number: ");
         String number = in.nextLine();
-        in.close();
 
-        if ( ( number.startsWith("+380") && number.length() == 13 )
-                || ( number.startsWith("0") && number.length() == 10 ) ) {
-            System.out.println("The phone number is correct");
+        String regex = "\\d+";
+        if ( ( number.startsWith("+380") && number.length() == 13 && number.substring(1).matches(regex) )
+                || ( number.startsWith("0") && number.length() == 10 && number.matches(regex) )
+                || ( number.startsWith("8") && number.length() == 11 && number.matches(regex) ) ) {
+            System.out.println("The phone number is correct!");
 
             int sum = 0;
             for (int i = 0; i < number.length(); i++) {
@@ -23,12 +24,16 @@ public class Number {
             System.out.println("1st round of calculation, sum is: " + sum);
 
             int sum2 = 0;
-            String str_sum = Integer.toString(sum);
-            for (int i = 0; i < str_sum.length(); i++) {
-                sum2 += Character.getNumericValue(str_sum.charAt(i));
+            while (sum > 9) {
+                sum2 = 0;
+                String str_sum = String.valueOf(sum);
+                for (int i = 0; i < str_sum.length(); i++) {
+                    sum2 += Character.getNumericValue(str_sum.charAt(i));
+                }
+                sum = sum2;
+                System.out.println("2nd round of calculation, sum is: " + sum2);
             }
-            System.out.println("2nd round of calculation, sum is: " + sum2);
-
+            
             switch (sum2) {
                 case 1:
                     System.out.println("Final result is: One");
@@ -47,9 +52,6 @@ public class Number {
             }
 
         } else
-            System.out.println("The phone number is incorrect. Please input your telephone number");
+            System.out.println("The phone number is incorrect! Please input your telephone number: ");
     }
-
-
-
 }
