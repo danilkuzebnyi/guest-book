@@ -6,11 +6,19 @@ public class Number {
 
     public static void main(String[] args) {
 
+        String number, regex;
+        boolean flag;
+        regex = "\\d+";
         Scanner in = new Scanner(System.in);
-        System.out.print("Input your telephone number: ");
-        String number = in.nextLine();
+        do {
+            System.out.print("Input your telephone number: ");
+            number = in.nextLine();
+            flag = ( ( number.startsWith("+380") && number.length() == 13 && number.substring(1).matches(regex) )
+                    || ( number.startsWith("0") && number.length() == 10 && number.matches(regex) )
+                    || ( number.startsWith("8") && number.length() == 11 && number.matches(regex) ) );
+        } while (!flag);
+        in.close();
 
-        String regex = "\\d+";
         if ( ( number.startsWith("+380") && number.length() == 13 && number.substring(1).matches(regex) )
                 || ( number.startsWith("0") && number.length() == 10 && number.matches(regex) )
                 || ( number.startsWith("8") && number.length() == 11 && number.matches(regex) ) ) {
@@ -51,7 +59,6 @@ public class Number {
                     System.out.println("Final result is: " + sum2);
             }
 
-        } else
-            System.out.println("The phone number is incorrect! Please input your telephone number: ");
+        }
     }
 }
