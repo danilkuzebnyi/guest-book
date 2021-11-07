@@ -22,8 +22,8 @@ public class Number {
         if ( ( number.startsWith("+380") && number.length() == 13 && number.substring(1).matches(regex) )
                 || ( number.startsWith("0") && number.length() == 10 && number.matches(regex) )
                 || ( number.startsWith("8") && number.length() == 11 && number.matches(regex) ) ) {
-            System.out.println("The phone number is correct!");
 
+            System.out.println("The phone number is correct!");
             int sum = 0;
             for (int i = 0; i < number.length(); i++) {
                 if (Character.isDigit(number.charAt(i)))
