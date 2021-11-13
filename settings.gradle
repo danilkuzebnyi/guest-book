@@ -1,3 +1,4 @@
 rootProject.name = 'danylo-kuzebnyi'
 include 'hw1'
+include 'hw2'
 
