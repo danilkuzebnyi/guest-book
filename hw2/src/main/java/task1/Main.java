@@ -1,4 +1,4 @@
-package org.geekhub.danylo;
+package task1;
 
 import java.util.Scanner;
 
@@ -24,7 +24,8 @@ public class Main {
             System.out.println("The area of square is: " + square.calculateArea());
             System.out.println("The perimeter of square is: " + square.calculatePerimeter());
             System.out.println("The area of triangle in the square is: " + square.calculateArea() / 2);
-            System.out.println("The perimeter of triangle in the square is: " + square.calculateTrianglePerimeter());
+            System.out.println("The perimeter of triangle in the square is: "
+                               + square.calculateTrianglePerimeter());
         } else if ("rectangle".equalsIgnoreCase(figure)) {
             System.out.print("Enter the sides length:\na = ");
             Input.setA(in.nextDouble());
@@ -33,7 +34,8 @@ public class Main {
             System.out.println("The area of rectangle is: " + rectangle.calculateArea());
             System.out.println("The perimeter of rectangle is: " + rectangle.calculatePerimeter());
             System.out.println("The area of triangle in the rectangle is: " + rectangle.calculateArea() / 2);
-            System.out.println("The perimeter of triangle in the rectangle is: " + rectangle.calculateTrianglePerimeter());
+            System.out.println("The perimeter of triangle in the rectangle is: "
+                               + rectangle.calculateTrianglePerimeter());
         } else if ("triangle".equalsIgnoreCase(figure)) {
             System.out.print("Enter the sides length:\na = ");
             Input.setA(in.nextDouble());

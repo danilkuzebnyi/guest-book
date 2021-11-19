@@ -1,6 +1,6 @@
-package org.geekhub.danylo;
+package task2;
 
-public class Rectangle extends Shape {
+public class Rectangle implements Shape {
 
     public double calculateArea() {
         return Input.getA() * Input.getB();
@@ -10,7 +10,7 @@ public class Rectangle extends Shape {
         return 2 * (Input.getA() + Input.getB());
     }
 
-    public double calculateTrianglePerimeter() {
+    public static double calculateTrianglePerimeter() {
         double hypotenuse = Math.sqrt(Input.getA() * Input.getA() + Input.getB() * Input.getB());
         return Input.getA() + Input.getB() + hypotenuse;
     }

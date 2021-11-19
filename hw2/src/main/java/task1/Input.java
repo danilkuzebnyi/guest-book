@@ -1,7 +1,6 @@
-package org.geekhub.danylo;
+package task1;
 
 public class Input {
-
     private static double r;
     private static double a;
     private static double b;
