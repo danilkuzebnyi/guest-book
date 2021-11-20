@@ -3,6 +3,8 @@ package org.geekhub.danylo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class tooLongWords {
 
@@ -11,16 +13,23 @@ public class tooLongWords {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String qtyOfLines = reader.readLine();
         int n = Integer.parseInt(qtyOfLines);
+
+        List<String> listOfWords = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             System.out.print("Enter a word: ");
             String word = reader.readLine();
-            System.out.print("Abbreviated word: ");
             if (word.length() > 10) {
-                System.out.println(String.valueOf(word.charAt(0)) + (word.length() - 2) + word.charAt(word.length() - 1));
+                String abbreviatedWord = String.valueOf(word.charAt(0)) + (word.length() - 2)
+                                                        + word.charAt(word.length() - 1);
+                listOfWords.add(abbreviatedWord);
             }
             else {
-                System.out.println(word);
+                listOfWords.add(word);
             }
+        }
+        System.out.println("Abbreviated words: ");
+        for (String word:listOfWords) {
+            System.out.println(word);
         }
     }
 }
