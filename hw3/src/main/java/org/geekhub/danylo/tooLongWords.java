@@ -15,7 +15,12 @@ public class tooLongWords {
             System.out.print("Enter a word: ");
             String word = reader.readLine();
             System.out.print("Abbreviated word: ");
-            System.out.println(String.valueOf(word.charAt(0)) + (word.length() - 2) + word.charAt(word.length() - 1));
+            if (word.length() > 10) {
+                System.out.println(String.valueOf(word.charAt(0)) + (word.length() - 2) + word.charAt(word.length() - 1));
+            }
+            else {
+                System.out.println(word);
+            }
         }
     }
 }
