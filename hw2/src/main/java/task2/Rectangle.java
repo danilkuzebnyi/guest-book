@@ -2,16 +2,19 @@ package task2;
 
 public class Rectangle implements Shape {
 
+    protected static double a;
+    protected static double b;
+
+    public Rectangle(double a, double b) {
+        this.a = a;
+        this.b = b;
+    }
+
     public double calculateArea() {
-        return Input.getA() * Input.getB();
+        return a * b;
     }
 
     public double calculatePerimeter() {
-        return 2 * (Input.getA() + Input.getB());
-    }
-
-    public static double calculateTrianglePerimeter() {
-        double hypotenuse = Math.sqrt(Input.getA() * Input.getA() + Input.getB() * Input.getB());
-        return Input.getA() + Input.getB() + hypotenuse;
+        return 2 * (a + b);
     }
 }

@@ -1,13 +1,17 @@
 package task2;
 
 public class Circle implements Shape {
-    public final double PI = Math.PI;
+    private double r;
+
+    public Circle(double r) {
+        this.r = r;
+    }
 
     public double calculateArea() {
-        return PI * Input.getR() * Input.getR();
+        return Math.PI * r * r;
     }
 
     public double calculatePerimeter() {
-        return 2 * Input.getR() * PI;
+        return 2 * r * Math.PI;
     }
 }

@@ -13,32 +13,22 @@ public class Main {
 
         switch (type) {
             case CIRCLE:
-                shape = new Circle();
                 System.out.print("Enter the radius: ");
-                Input.setR(in.nextDouble());
+                shape = new Circle(in.nextDouble());
                 break;
             case SQUARE:
-                shape = new Square();
                 System.out.print("Enter the side length: a = ");
-                Input.setA(in.nextDouble());
+                shape = new Square(in.nextDouble());
                 break;
             case RECTANGLE:
-                shape = new Rectangle();
-                System.out.print("Enter the sides length:\na = ");
-                Input.setA(in.nextDouble());
-                System.out.print("b = ");
-                Input.setB(in.nextDouble());
+                System.out.println("Enter the sides length a and b:");
+                shape = new Rectangle(in.nextDouble(), in.nextDouble());
                 break;
             case TRIANGLE:
-                shape = new Triangle();
                 while (!Triangle.doesTriangleExist()) {
                     System.out.println("Enter an existing triangle");
-                    System.out.print("Enter the sides length:\na = ");
-                    Input.setA(in.nextDouble());
-                    System.out.print("b = ");
-                    Input.setB(in.nextDouble());
-                    System.out.print("c = ");
-                    Input.setC(in.nextDouble());
+                    System.out.println("Enter the sides length a, b, c:");
+                    shape = new Triangle(in.nextDouble(), in.nextDouble(), in.nextDouble());
                 }
                 break;
         }
@@ -48,12 +38,12 @@ public class Main {
         if (type == Form.SQUARE) {
             System.out.printf("The area of triangle in the %s is: " + shape.calculateArea() / 2 + "\n", type);
             System.out.printf("The perimeter of triangle in the %s is: "
-                    + Square.calculateTrianglePerimeter(), type);
+                    + (Square.a * (2 + Math.sqrt(2))), type);
         }
         if (type == Form.RECTANGLE) {
             System.out.printf("The area of triangle in the %s is: " + shape.calculateArea() / 2 + "\n", type);
             System.out.printf("The perimeter of triangle in the %s is: "
-                    + Rectangle.calculateTrianglePerimeter(), type);
+                    + (Rectangle.a + Rectangle.b + Math.sqrt(Rectangle.a * Rectangle.a + Rectangle.b * Rectangle.b)), type);
         }
 
     }

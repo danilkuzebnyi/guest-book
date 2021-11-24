@@ -2,16 +2,17 @@ package task2;
 
 public class Square implements Shape {
 
+    protected static double a;
+
+    public Square(double a) {
+        this.a = a;
+    }
+
     public double calculateArea() {
-        return Input.getA() * Input.getA();
+        return a * a;
     }
 
     public double calculatePerimeter() {
-        return 4 * Input.getA();
-    }
-
-    public static double calculateTrianglePerimeter() {
-        double hypotenuse = Math.sqrt(2) * Input.getA();
-        return 2 * Input.getA() + hypotenuse;
+        return 4 * a;
     }
 }
