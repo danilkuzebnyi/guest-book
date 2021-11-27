@@ -14,11 +14,12 @@ public class tooLongWords {
         String qtyOfLines = reader.readLine();
         int n = Integer.parseInt(qtyOfLines);
 
+        final int lengthWhenWordBecomesLong = 10;
         List<String> listOfWords = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             System.out.print("Enter a word: ");
             String word = reader.readLine();
-            if (word.length() > 10) {
+            if (word.length() > lengthWhenWordBecomesLong) {
                 String abbreviatedWord = String.valueOf(word.charAt(0)) + (word.length() - 2)
                                                         + word.charAt(word.length() - 1);
                 listOfWords.add(abbreviatedWord);
