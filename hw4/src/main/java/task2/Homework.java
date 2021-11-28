@@ -3,36 +3,39 @@ package task2;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class Homework {
+public class Homework extends Teacher {
     Random r = new Random();
-    List<BigDecimal> hwGrades = new ArrayList<>();
+    Map<BigDecimal, String> hwCheckedBy = new LinkedHashMap<>();
     MathContext scale = new MathContext(2, RoundingMode.HALF_UP);
-    List<String> deadline = new ArrayList<>();
 
-    public void giveGradesForHw(int numberOfHw) {
+    public List giveGradesForHw(int numberOfHw) {
         double min = 2;
         double max = 5;
+        List<BigDecimal> hwGrades = new ArrayList<>();
         for (int i = 0; i < numberOfHw; i++) {
             double hwGrade = min + (max - min) * r.nextDouble();
-            BigDecimal result = new BigDecimal(hwGrade, scale);
-            hwGrades.add(result);
+            BigDecimal grade = new BigDecimal(hwGrade, scale);
+            hwGrades.add(grade);
+            //int randomIndex = r.nextInt(teachers.size());
+            //hwCheckedBy.put(grade, teachers.get(randomIndex));
+            //System.out.println(hwCheckedBy);
         }
+        return hwGrades;
     }
 
-    public void madeItToTheDeadline(int numberOfHw) {
+    public List madeItToTheDeadline(int numberOfHw) {
+        List<String> deadline = new ArrayList<>();
         for (int i = 0; i < numberOfHw; i++) {
-            boolean beOnTime  = r.nextBoolean();
+            boolean beOnTime = r.nextBoolean();
             if (beOnTime) {
                 deadline.add("+");
-            }
-            else {
+            } else {
                 deadline.add("-");
             }
         }
+        return deadline;
     }
 
 }

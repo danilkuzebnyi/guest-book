@@ -3,25 +3,25 @@ package task2;
 public class Main {
 
     public static void main(String[] args) {
+        Homework hw = new Homework();
+        hw.addTeacher("Dmytro Gordon");
+        hw.addTeacher("Oleksandr Usyk");
+        hw.giveGradesForHw(5);
+
         Student student = new Student();
         student.addStudent("Danylo Kuzebnyi");
         student.addStudent("Igor Baranov");
-        student.addStudent("Max Shevchenko");
+        student.addStudent("Maxim Shevchenko");
         student.addStudent("Serhiy Antipov");
         student.addStudent("Yuriy Boiko");
-        System.out.println(student.students);
+        student.addHwToEachStudent();
+        student.addDeadlineToEachStudent();
+        student.beOnLecture(5);
+        System.out.println("lectures: " + student.lectureOfStudent);
+        student.removeStudent();
+        System.out.println("students who stayed: " + student.students);
+        System.out.println(student.hwOfEachStudent);
+        System.out.println("deadlines: " + student.deadlineOfEachStudent);
 
-        Teacher teacher = new Teacher();
-        teacher.addTeacher("Dmytro Gordon");
-        teacher.addTeacher("Oleksandr Usyk");
-        System.out.println(teacher.teachers);
-        teacher.checkHw(5);
-        System.out.println(teacher.checkedBy);
-
-        Homework hw = new Homework();
-        hw.giveGradesForHw(5);
-        System.out.println(hw.hwGrades);
-        hw.madeItToTheDeadline(5);
-        System.out.println(hw.deadline);
     }
 }
