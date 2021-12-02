@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Teacher {
-    private String name;
-    List<String> teachers = new ArrayList<>();
+    static List<String> teachers = new ArrayList<>();
 
-    public void addTeacher(String name) {
-        this.name = name;
+    public static void addTeacher(String name) {
         teachers.add(name);
     }
 

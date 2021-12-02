@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class Student extends Homework {
-    String name;
-    int maxAbsenteeism = 0;
+    private int maxAbsenteeism = 0;
     List<String> students = new ArrayList<>();
+    List<BigDecimal> allGrades = new ArrayList<>();
     Map<String, List> hwOfEachStudent = new LinkedHashMap<>();
     Map<String, List> deadlineOfEachStudent = new LinkedHashMap<>();
+    Map<BigDecimal, String> hwCheckedBy = new LinkedHashMap<>();
     Map<String, List> lectureOfStudent = new LinkedHashMap<>();
     Map<String, Integer> studentToAbsenteeism = new LinkedHashMap<>();
     Map<Integer, String> absenteeismToStudent = new LinkedHashMap<>();
 
     public void addStudent(String name) {
-        this.name = name;
         students.add(name);
     }
 
@@ -28,6 +28,25 @@ public class Student extends Homework {
         for (String student : students) {
             deadlineOfEachStudent.put(student, madeItToTheDeadline(5));
         }
+    }
+
+    public void addHwToEachTeacher() {
+        for (List grades : hwOfEachStudent.values()) {
+            allGrades.addAll(grades);
+        }
+
+        for (BigDecimal grade : allGrades) {
+            int randomIndex = r.nextInt(teachers.size());
+            hwCheckedBy.put(grade, teachers.get(randomIndex));
+        }
+
+        String teacherWhoSet5 = "Teachers don't want set grade of 5";
+        for (BigDecimal grade : hwCheckedBy.keySet()) {
+            if (grade.equals(BigDecimal.valueOf(5.0))) {
+                teacherWhoSet5 = hwCheckedBy.get(grade);
+            }
+        }
+        System.out.println("Teacher who set grade of 5 is: " + teacherWhoSet5);
     }
 
     public void beOnLecture(int numberOfLectures) {
@@ -86,7 +105,6 @@ public class Student extends Homework {
             List<String> listOfDeadlines = new ArrayList<>();
             listOfDeadlines = deadlineOfEachStudent.get(student);
             int numberOfFailedDeadlines = Collections.frequency(listOfDeadlines, "-");
-            ;
             if (numberOfFailedDeadlines >= 3) {
                 students.remove(student);
             }

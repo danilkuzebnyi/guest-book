@@ -3,9 +3,11 @@ package task2;
 public class Main {
 
     public static void main(String[] args) {
+        Teacher teacher = new Teacher();
+        teacher.addTeacher("Dmytro Gordon");
+        teacher.addTeacher("Oleksandr Usyk");
+
         Homework hw = new Homework();
-        hw.addTeacher("Dmytro Gordon");
-        hw.addTeacher("Oleksandr Usyk");
         hw.giveGradesForHw(5);
 
         Student student = new Student();
@@ -16,6 +18,7 @@ public class Main {
         student.addStudent("Yuriy Boiko");
         student.addHwToEachStudent();
         student.addDeadlineToEachStudent();
+        student.addHwToEachTeacher();
         student.beOnLecture(5);
         System.out.println("lectures: " + student.lectureOfStudent);
         student.removeStudent();

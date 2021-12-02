@@ -7,7 +7,6 @@ import java.util.*;
 
 public class Homework extends Teacher {
     Random r = new Random();
-    Map<BigDecimal, String> hwCheckedBy = new LinkedHashMap<>();
     MathContext scale = new MathContext(2, RoundingMode.HALF_UP);
 
     public List giveGradesForHw(int numberOfHw) {
@@ -18,9 +17,6 @@ public class Homework extends Teacher {
             double hwGrade = min + (max - min) * r.nextDouble();
             BigDecimal grade = new BigDecimal(hwGrade, scale);
             hwGrades.add(grade);
-            //int randomIndex = r.nextInt(teachers.size());
-            //hwCheckedBy.put(grade, teachers.get(randomIndex));
-            //System.out.println(hwCheckedBy);
         }
         return hwGrades;
     }
