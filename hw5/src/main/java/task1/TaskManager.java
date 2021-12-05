@@ -13,7 +13,6 @@ public interface TaskManager {
 
     Set<String> getCategories();
 
-    //For next 3 methods tasks should be sorted by date
     Map<String, List<Task>> getTasksByCategories(String ... categories);
 
     List<Task> getTasksByCategory(String category);
