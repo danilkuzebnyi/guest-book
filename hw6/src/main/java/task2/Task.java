@@ -11,11 +11,12 @@ public class Task {
     private Set<String> categories;
     private LocalDate startsOn;
 
-    public Task(int id, TaskType type, String title, boolean done, LocalDate startsOn) {
+    public Task(int id, TaskType type, String title, boolean done, Set<String> categories, LocalDate startsOn) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.done = done;
+        this.categories = categories;
         this.startsOn = startsOn;
     }
 
@@ -53,9 +54,5 @@ public class Task {
 
     public LocalDate getStartsOn() {
         return startsOn;
-    }
-
-    public int compare(Task task1, Task task2) {
-        return task1.getStartsOn().compareTo(task2.getStartsOn());
     }
 }
