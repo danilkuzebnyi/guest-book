@@ -3,57 +3,36 @@ package task2;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class Student extends Homework {
-    private int maxAbsenteeism = 0;
-    List<String> students = new ArrayList<>();
-    List<BigDecimal> allGrades = new ArrayList<>();
-    Map<String, List> hwOfEachStudent = new LinkedHashMap<>();
+public class Student {
+    Random random = new Random();
+    static List<String> students = new ArrayList<>();
+    static Map<String, List> hwOfEachStudent = new LinkedHashMap<>();
     Map<String, List> deadlineOfEachStudent = new LinkedHashMap<>();
-    Map<BigDecimal, String> hwCheckedBy = new LinkedHashMap<>();
-    Map<String, List> lectureOfStudent = new LinkedHashMap<>();
-    Map<String, Integer> studentToAbsenteeism = new LinkedHashMap<>();
-    Map<Integer, String> absenteeismToStudent = new LinkedHashMap<>();
 
     public void addStudent(String name) {
         students.add(name);
     }
 
-    public void addHwToEachStudent() {
+    public static void addHwToEachStudent() {
         for (String student : students) {
-            hwOfEachStudent.put(student, giveGradesForHw(5));
+            hwOfEachStudent.put(student, Homework.giveGradesForHw(5));
         }
     }
 
     public void addDeadlineToEachStudent() {
         for (String student : students) {
-            deadlineOfEachStudent.put(student, madeItToTheDeadline(5));
+            deadlineOfEachStudent.put(student, Homework.madeItToTheDeadline(5));
         }
-    }
-
-    public void addHwToEachTeacher() {
-        for (List grades : hwOfEachStudent.values()) {
-            allGrades.addAll(grades);
-        }
-
-        for (BigDecimal grade : allGrades) {
-            int randomIndex = r.nextInt(teachers.size());
-            hwCheckedBy.put(grade, teachers.get(randomIndex));
-        }
-
-        String teacherWhoSet5 = "Teachers don't want set grade of 5";
-        for (BigDecimal grade : hwCheckedBy.keySet()) {
-            if (grade.equals(BigDecimal.valueOf(5.0))) {
-                teacherWhoSet5 = hwCheckedBy.get(grade);
-            }
-        }
-        System.out.println("Teacher who set grade of 5 is: " + teacherWhoSet5);
     }
 
     public void beOnLecture(int numberOfLectures) {
+        Map<String, List> lectureOfStudent = new LinkedHashMap<>();
+        Map<Integer, String> absenteeismToStudent = new LinkedHashMap<>();
+
         for (String student : students) {
             List<String> lectures = new LinkedList<>();
             for (int i = 0; i < numberOfLectures; i++) {
-                boolean beOnLecture = r.nextBoolean();
+                boolean beOnLecture = random.nextBoolean();
                 if (beOnLecture) {
                     lectures.add("+");
                 } else {
@@ -61,28 +40,20 @@ public class Student extends Homework {
                 }
             }
             int absenteeism = Collections.frequency(lectures, "-");
-            studentToAbsenteeism.put(student, absenteeism);
+            absenteeismToStudent.put(absenteeism, student);
             lectureOfStudent.put(student, lectures);
         }
-        for (String student : studentToAbsenteeism.keySet()) {
-            if (studentToAbsenteeism.get(student) > maxAbsenteeism) {
-                maxAbsenteeism = studentToAbsenteeism.get(student);
-                absenteeismToStudent.put(maxAbsenteeism, student);
-            }
-        }
-        for (int absenteeism : absenteeismToStudent.keySet()) {
-            if (absenteeism > maxAbsenteeism) {
-                maxAbsenteeism = absenteeism;
-            }
-        }
+        int maxAbsenteeism = absenteeismToStudent.keySet()
+                .stream()
+                .max(Integer::compareTo)
+                .get();
         System.out.println("The student who missed the most lectures is " + absenteeismToStudent.get(maxAbsenteeism));
         for (int i = 0; i < lectureOfStudent.get(absenteeismToStudent.get(maxAbsenteeism)).size(); i++) {
             if (lectureOfStudent.get(absenteeismToStudent.get(maxAbsenteeism)).get(i) == "-") {
-                System.out.printf("Student has to learn the %s lection", i + 1);
-                System.out.println();
+                System.out.printf("Student has to learn the %s lecture %n", i + 1);
             }
         }
-
+        System.out.println("Attendance at lectures: " + lectureOfStudent);
     }
 
     public void removeStudent() {

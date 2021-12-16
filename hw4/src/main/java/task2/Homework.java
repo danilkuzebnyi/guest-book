@@ -5,26 +5,27 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.*;
 
-public class Homework extends Teacher {
-    Random r = new Random();
-    MathContext scale = new MathContext(2, RoundingMode.HALF_UP);
+public class Homework {
 
-    public List giveGradesForHw(int numberOfHw) {
+    public static List giveGradesForHw(int numberOfHw) {
         double min = 2;
         double max = 5;
         List<BigDecimal> hwGrades = new ArrayList<>();
+        Random random = new Random();
+        MathContext scale = new MathContext(2, RoundingMode.HALF_UP);
         for (int i = 0; i < numberOfHw; i++) {
-            double hwGrade = min + (max - min) * r.nextDouble();
+            double hwGrade = min + (max - min) * random.nextDouble();
             BigDecimal grade = new BigDecimal(hwGrade, scale);
             hwGrades.add(grade);
         }
         return hwGrades;
     }
 
-    public List madeItToTheDeadline(int numberOfHw) {
+    public static List madeItToTheDeadline(int numberOfHw) {
         List<String> deadline = new ArrayList<>();
+        Random random = new Random();
         for (int i = 0; i < numberOfHw; i++) {
-            boolean beOnTime = r.nextBoolean();
+            boolean beOnTime = random.nextBoolean();
             if (beOnTime) {
                 deadline.add("+");
             } else {
