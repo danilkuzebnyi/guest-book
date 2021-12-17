@@ -5,14 +5,11 @@ import java.util.*;
 
 public class TaskManagerImpl implements TaskManager {
     Set<String> categories = new LinkedHashSet<>();
-    List<Task> tasks = new ArrayList<>();
     Map<LocalDateTime, String> categoriesByDate = new TreeMap<>();
     List<Task> listTasksByDate = new ArrayList<>();
+    List<Task> tasks = new ArrayList<>();
     Map<LocalDateTime, List<Task>> tasksByDate = new TreeMap<>();
     Map<String, List<Task>> tasksByCategories = new LinkedHashMap<>();
-    Map<String, List<Task>> tasksByFewCategories = new LinkedHashMap<>();
-    Map<String, List<Task>> tasksByFewCategoriesSortedByDate = new LinkedHashMap<>();
-    List<Task> tasksForToday = new ArrayList<>();
 
     @Override
     public void add(LocalDateTime date, Task task) {
@@ -31,14 +28,16 @@ public class TaskManagerImpl implements TaskManager {
 
     public void addTasksToCategories() {
         for (LocalDateTime dateTime : tasksByDate.keySet()) {
-            if (tasksByCategories.containsKey(tasksByDate.get(dateTime).get(0).getCategory())) {
-                tasks = tasksByCategories.get(tasksByDate.get(dateTime).get(0).getCategory());
-                for (int i = 0; i < tasksByDate.get(dateTime).size(); i++) {
+            for (int i = 0; i < tasksByDate.get(dateTime).size(); i++) {
+                if (tasksByCategories.containsKey(tasksByDate.get(dateTime).get(i).getCategory())) {
+                    tasks = tasksByCategories.get(tasksByDate.get(dateTime).get(i).getCategory());
                     tasks.add(tasksByDate.get(dateTime).get(i));
+                    tasksByCategories.put(tasksByDate.get(dateTime).get(i).getCategory(), tasks);
+                } else {
+                    List<Task> tasks = new ArrayList<>();
+                    tasks.add(tasksByDate.get(dateTime).get(i));
+                    tasksByCategories.put(tasksByDate.get(dateTime).get(i).getCategory(), tasks);
                 }
-                tasksByCategories.put(tasksByDate.get(dateTime).get(0).getCategory(), tasks);
-            } else {
-                tasksByCategories.put(tasksByDate.get(dateTime).get(0).getCategory(), tasksByDate.get(dateTime));
             }
         }
     }
@@ -58,9 +57,13 @@ public class TaskManagerImpl implements TaskManager {
 
     @Override
     public Map<String, List<Task>> getTasksByCategories(String... categories) {
+        Map<String, List<Task>> tasksByFewCategories = new LinkedHashMap<>();
+        Map<String, List<Task>> tasksByFewCategoriesSortedByDate = new LinkedHashMap<>();
+
         for (String category : categories) {
             tasksByFewCategories.put(category, tasksByCategories.get(category));
         }
+
         for (String key : tasksByCategories.keySet()) {
             if (tasksByFewCategories.containsKey(key)) {
                 tasksByFewCategoriesSortedByDate.put(key, tasksByCategories.get(key));
@@ -76,7 +79,6 @@ public class TaskManagerImpl implements TaskManager {
 
     @Override
     public List<Task> getTasksForToday() {
-        tasksForToday = tasksByDate.get(LocalDateTime.of(2021, 12, 6, 20, 0));
-        return tasksForToday;
+        return tasksByDate.get(LocalDateTime.of(2021, 12, 6, 20, 0));
     }
 }
