@@ -1,23 +1,36 @@
 package task1;
 
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class LinkedList<T> implements Iterable<T> {
 
     public static void main(String[] args) {
         LinkedList<String> stringList = new LinkedList<>();
-        stringList.addElement("1");
-        stringList.addElement("2");
-        stringList.addElement("3");
-        stringList.addElement("4");
-        stringList.addElement("5");
+        stringList.addElement("dog");
+        stringList.addElement("cat");
+        stringList.addElement("fog");
+        stringList.addElement("horse");
+        stringList.addElement("bear");
 
         for (String s : stringList) {
             System.out.println(s);
         }
-        System.out.println("size = " + stringList.size);
 
         stringList.swapTwoElements(1, 3);
+        System.out.println("\nLinked list after swapping 2 elements");
+        for (String s : stringList) {
+            System.out.println(s);
+        }
+
+        System.out.println("\nSorting by bubble sorting");
+        stringList.bubbleSorting(String::compareTo, Direction.ASC, stringList);
+        for (String s : stringList) {
+            System.out.println(s);
+        }
+
+        System.out.println("\nSorting by insertion sorting");
+        stringList.insertionSorting(String::compareTo, Direction.DESC, stringList);
         for (String s : stringList) {
             System.out.println(s);
         }
@@ -35,7 +48,7 @@ public class LinkedList<T> implements Iterable<T> {
     public void addElement(T currentElement) {
         Node<T> previousElement = lastNode;
         lastNode = new Node<>(previousElement, currentElement, null);
-        previousElement.setNextElement(lastNode);
+        previousElement.nextElement = lastNode;
         size++;
     }
 
@@ -71,9 +84,16 @@ public class LinkedList<T> implements Iterable<T> {
                 Node<T> nextSecondElementNode = secondElementNode.nextElement;
 
                 prevFirstElementNode.nextElement = secondElementNode;
-                secondElementNode.nextElement = nextFirstElementNode;
                 prevSecondElementNode.nextElement = firstElementNode;
                 firstElementNode.nextElement = nextSecondElementNode;
+                secondElementNode.nextElement = nextFirstElementNode;
+                firstElementNode.previousElement = prevSecondElementNode;
+                secondElementNode.previousElement = prevFirstElementNode;
+                if (nextFirstElementNode != null) {
+                    nextFirstElementNode.previousElement = secondElementNode;
+                } else if (nextSecondElementNode != null) {
+                    nextSecondElementNode.previousElement = firstElementNode;
+                }
 
                 if (nextFirstElementNode == secondElementNode) {
                     secondElementNode.nextElement = firstElementNode;
@@ -84,12 +104,68 @@ public class LinkedList<T> implements Iterable<T> {
         }
     }
 
-    public T getElementByIndex(int index) {
-        Node<T> element = firstNode.getNextElement();
-        for (int i = 0; i <= index; i++) {
-            element = element.getNextElement();
+    public LinkedList<String> bubbleSorting(Comparator<String> comparator,
+                                            Direction direction,
+                                            LinkedList<String> stringList) {
+        LinkedList<String> sortedStringList;
+        sortedStringList = stringList;
+        boolean isSorted = false;
+        while (!isSorted) {
+            isSorted = true;
+            for (int i = 1; i < sortedStringList.size; i++) {
+                switch (direction) {
+                    case ASC:
+                        if (comparator.compare(sortedStringList.getElementByIndex(i - 1),
+                                               sortedStringList.getElementByIndex(i)) > 0) {
+                            sortedStringList.swapTwoElements(i - 1, i);
+                            isSorted = false;
+                        }
+                        break;
+                    case DESC:
+                        if (comparator.compare(sortedStringList.getElementByIndex(i - 1),
+                                               sortedStringList.getElementByIndex(i)) < 0) {
+                            sortedStringList.swapTwoElements(i - 1, i);
+                            isSorted = false;
+                        }
+                        break;
+                }
+            }
         }
-        return element.getCurrentElement();
+        return sortedStringList;
+    }
+
+    public LinkedList<String> insertionSorting(Comparator<String> comparator,
+                                               Direction direction,
+                                               LinkedList<String> stringList) {
+        LinkedList<String> sortedStringList;
+        sortedStringList = stringList;
+        for (int i = 1; i < sortedStringList.size; i++) {
+            String currentElement = sortedStringList.getElementByIndex(i);
+            int j = i;
+            switch (direction) {
+                case ASC:
+                    while (j > 0 && comparator.compare(sortedStringList.getElementByIndex(j - 1), currentElement) > 0) {
+                        swapTwoElements(j - 1, j);
+                        j--;
+                    }
+                    break;
+                case DESC:
+                    while (j > 0 && comparator.compare(sortedStringList.getElementByIndex(j - 1), currentElement) < 0) {
+                        swapTwoElements(j - 1, j);
+                        j--;
+                    }
+                    break;
+            }
+        }
+        return sortedStringList;
+    }
+
+    public T getElementByIndex(int index) {
+        Node<T> element = firstNode.nextElement;
+        for (int i = 0; i <= index; i++) {
+            element = element.nextElement;
+        }
+        return element.currentElement;
     }
 
     @Override
@@ -114,44 +190,11 @@ public class LinkedList<T> implements Iterable<T> {
         private Node<T> previousElement;
         private T currentElement;
         private Node<T> nextElement;
-        private int index;
 
         public Node(Node<T> previousElement, T currentElement, Node<T> nextElement) {
             this.previousElement = previousElement;
             this.currentElement = currentElement;
             this.nextElement = nextElement;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public void setIndex(int index) {
-            this.index = index;
-        }
-
-        public void setPreviousElement(Node<T> previousElement) {
-            this.previousElement = previousElement;
-        }
-
-        public void setCurrentElement(T currentElement) {
-            this.currentElement = currentElement;
-        }
-
-        public void setNextElement(Node<T> nextElement) {
-            this.nextElement = nextElement;
-        }
-
-        public Node<T> getPreviousElement() {
-            return previousElement;
-        }
-
-        public T getCurrentElement() {
-            return currentElement;
-        }
-
-        public Node<T> getNextElement() {
-            return nextElement;
         }
     }
 }
