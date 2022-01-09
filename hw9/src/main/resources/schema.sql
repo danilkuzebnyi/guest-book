@@ -1,4 +1,4 @@
-create table customer
+ocreate table customer
 (
     id           serial      not null
         constraint customer_pk
