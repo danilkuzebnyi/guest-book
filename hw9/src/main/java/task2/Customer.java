@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Customer {
     static List<Customer> allCustomers = new ArrayList<>();
-    private int id;
     private String firstName;
     private String lastName;
     private String cellPhone;
@@ -21,10 +20,6 @@ public class Customer {
         allCustomers.addAll(Arrays.asList(customers));
     }
 
-    public int getId() {
-        return id;
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -35,5 +30,11 @@ public class Customer {
 
     public String getCellPhone() {
         return cellPhone;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer(" +
+                 firstName + " " + lastName + ", " + cellPhone + ")";
     }
 }

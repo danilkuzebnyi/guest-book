@@ -29,7 +29,7 @@ create unique index product_id_uindex
     on product (id);
 
 
-create table "order"
+create table "booking"
 (
     id                serial  not null
         constraint order_pk

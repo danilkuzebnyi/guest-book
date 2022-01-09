@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Product {
     static List<Product> allProducts = new ArrayList<>();
-    private int id;
     private String name;
     private String description;
     private float currentPrice;
@@ -21,10 +20,6 @@ public class Product {
         allProducts.addAll(Arrays.asList(products));
     }
 
-    public int getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
@@ -35,5 +30,14 @@ public class Product {
 
     public float getCurrentPrice() {
         return currentPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Product(" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", currentPrice=" + currentPrice +
+                ')';
     }
 }

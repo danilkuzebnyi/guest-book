@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Booking {
     static List<Booking> allBookings = new ArrayList<>();
-    private int id;
     private int customerId;
     private int productId;
     private int qtyOfProducts;
@@ -21,10 +20,6 @@ public class Booking {
 
     public static void addBookings(Booking... bookings) {
         allBookings.addAll(Arrays.asList(bookings));
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getCustomerId() {
