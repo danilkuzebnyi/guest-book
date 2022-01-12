@@ -63,26 +63,36 @@ UNION ALL
 ORDER BY country;
 
 --8
-SELECT country, count_of_states
+SELECT co.name, COUNT(s.name)
 FROM (
-         SELECT co.name AS country, COUNT(s.name) AS count_of_states
-         FROM countries co
-                  JOIN states s ON co.id = s.country_id
-         GROUP BY country
-     ) AS t
-GROUP BY country, count_of_states
-HAVING count_of_states > (SELECT AVG(count_of_states) FROM t);
---HAVING COUNT(s.name) > (SELECT AVG(count_of_states) FROM t);
+         SELECT AVG(count_of_states) as average
+         FROM (
+                  SELECT co.name AS country, COUNT(s.name) AS count_of_states
+                  FROM countries co
+                           JOIN states s ON co.id = s.country_id
+                  GROUP BY country
+              ) t1
+     ) t2,
+     countries co
+         JOIN states s on co.id = s.country_id
+GROUP BY co.name, average
+HAVING COUNT(s.name) > average;
 
 --9
-SELECT DISTINCT count, country
-FROM (
-         SELECT DISTINCT co.name AS country, COUNT(s.name) OVER (PARTITION BY co.name) AS count
-         FROM countries co
-                  JOIN states s ON co.id = s.country_id
-         GROUP BY country, s.name ) t
-ORDER BY count, country;
-
+WITH t1 AS
+         (SELECT DISTINCT COUNT(s.name) OVER (PARTITION BY co.name) AS count_of_states,
+                          co.id,
+                          co.sortname,
+                          co.name                                   AS country,
+                          co.phonecode
+          FROM countries co
+                   JOIN states s ON co.id = s.country_id
+          GROUP BY country, co.id, co.sortname, co.phonecode, s.name),
+     t2 AS
+         (SELECT DISTINCT ON (count_of_states) count_of_states AS count_of_states, id, sortname, country, phonecode
+          FROM t1)
+SELECT id, sortname, country, phonecode, count_of_states
+FROM t2;
 
 --10
 SELECT state, country
