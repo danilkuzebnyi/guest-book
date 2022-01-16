@@ -1,21 +1,23 @@
 package task1;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import task1.Annotations.Ignore;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class DatabaseStorage implements Storage {
 
-    private DataSource dataSource;
-    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
+    private final org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+    private final TableNameResolver tableNameResolver = new TableNameResolver();
+    private final TableColumnResolver tableColumnResolver = new TableColumnResolver();
+    private Map<String, Object> fieldsAndTheirValues = new HashMap<>();
 
     public DatabaseStorage(DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
@@ -23,57 +25,62 @@ public class DatabaseStorage implements Storage {
     }
 
     @Override
-    public <T extends Entity> T get(Class<T> clazz, Integer id) throws StorageException {
-        //this method is fully implemented, no need to do anything, it's just an example
-        String sql = "SELECT * FROM " + clazz.getSimpleName().toLowerCase() + " WHERE id = " + id;
-        try (Connection connection = dataSource.getConnection()) {
-            Statement statement = connection.createStatement();
-            List<T> result = extractResult(clazz, statement.executeQuery(sql));
-            return result.isEmpty() ? null : result.get(0);
-        } catch (StorageException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new StorageException(e);
+    public <T extends Entity> T get(Class<T> clazz, Integer id) {
+        return jdbcTemplate.query("SELECT * FROM " + tableNameResolver.resolve(clazz) + " WHERE id = ?",
+                new BeanPropertyRowMapper<>(clazz), id).stream().findAny().orElse(null);
+    }
+
+    @Override
+    public <T extends Entity> List<T> list(Class<T> clazz) {
+        return jdbcTemplate.query("SELECT * FROM " + tableNameResolver.resolve(clazz),
+                new BeanPropertyRowMapper<>(clazz));
+    }
+
+    @Override
+    public <T extends Entity> boolean delete(T entity) {
+        Class<? extends Entity> clazz = entity.getClass();
+        int id = entity.getId();
+        int sizeOfListBeforeDeleting = list(clazz).size();
+        jdbcTemplate.update("DELETE FROM " + tableNameResolver.resolve(clazz) + " WHERE id = ?", id);
+        int sizeOfListAfterDeleting = list(clazz).size();
+        return sizeOfListBeforeDeleting != sizeOfListAfterDeleting;
+    }
+
+    @Override
+    public <T extends Entity> void save(T entity) throws StorageException, IllegalAccessException {
+        Class<? extends Entity> clazz = entity.getClass();
+        fieldsAndTheirValues = prepareEntity(entity);
+        Field[] fields = clazz.getDeclaredFields();
+        int id = entity.getId();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Ignore.class)) {
+                continue;
+            }
+            if (!entity.isNew()) {
+                jdbcTemplate.update("UPDATE " + tableNameResolver.resolve(clazz) + " SET " +
+                        tableColumnResolver.resolve(field) + " = '" +
+                        fieldsAndTheirValues.get(tableColumnResolver.resolve(field)) + "' WHERE id = ?", id);
+            } else if (entity.isNew()) {
+                List<String> columnElements = Arrays.stream(fields).map(Field::getName).collect(Collectors.toList());
+                String columnElement = String.join(", ", columnElements);
+                int numberOfColumns = fields.length;
+                String questionMarkElement = IntStream.range(0, numberOfColumns)
+                        .mapToObj(index -> "?")
+                        .collect(Collectors.joining(", "));
+                jdbcTemplate.update("INSERT INTO " + tableNameResolver.resolve(clazz) + "(" + columnElement + ") VALUES("
+                        + questionMarkElement + ")", fields[0].get(entity), fields[1].get(entity));
+            }
         }
     }
 
-    @Override
-    public <T extends Entity> List<T> list(Class<T> clazz) throws StorageException {
-        return null;
-    }
-
-    @Override
-    public <T extends Entity> boolean delete(T entity) throws StorageException {
-        //TODO: Implement me
-        return false;
-    }
-
-    @Override
-    public <T extends Entity> void save(T entity) throws StorageException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private <T extends Entity> Map<String, Object> prepareEntity(T entity) throws IllegalAccessException {
         Class<? extends Entity> clazz = entity.getClass();
-        Object object = clazz.getConstructor().newInstance();
         Field[] fields = clazz.getDeclaredFields();
-        /*for (Field field : fields) {
+        for (Field field : fields) {
             field.setAccessible(true);
-            jdbcTemplate.update("INSERT INTO " + clazz.getSimpleName().toLowerCase() +
-                    "(" + field.getName() + ") VALUES(?) WHERE id = " + entity.getId(), field.get(entity));
-        }*/
-
-        jdbcTemplate.update("INSERT INTO cat(name, age) VALUES(?, ?)", fields[0].get(entity), fields[1].get(entity));
-    }
-
-    //creates list of new instances of clazz by using data from the result set
-    private <T extends Entity> List<T> extractResult(Class<T> clazz, ResultSet resultSet) throws Exception {
-        /*
-        This method must a create a resulting list of entities. Fill objects with data from the results set.
-        Use reflection to create an instance of given class. Extract data from result set by class' field name.
-         */
-        return null;
-    }
-
-    //converts object to map, could be helpful in save method
-    private <T extends Entity> Map<String, Object> prepareEntity(T entity) throws StorageException {
-        //TODO: Implement me and use in the save method
-        return null;
+            fieldsAndTheirValues.put(field.getName(), field.get(entity));
+        }
+        return fieldsAndTheirValues;
     }
 }

@@ -4,8 +4,8 @@ import task1.Entity;
 
 public class Cat extends Entity {
 
-    public String name;
-    public int age;
+    private String name;
+    private int age;
 
     public String getName() {
         return name;
@@ -21,5 +21,13 @@ public class Cat extends Entity {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Cat{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

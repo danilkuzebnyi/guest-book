@@ -4,17 +4,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
 import task1.Objects.Cat;
 import task1.Objects.User;
-import task1.Storage;
-import task1.DatabaseStorage;
-
 import javax.sql.DataSource;
-import java.io.*;
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 
 public class Application {
 
@@ -29,19 +20,18 @@ public class Application {
 
         for (int i = 1; i <= 20; i++) {
             Cat cat = new Cat();
-            cat.setId(i);
             cat.setName("cat" + i);
             cat.setAge(i);
             storage.save(cat);
         }
-
-        /*List<Cat> cats = storage.list(Cat.class);
+        List<Cat> cats = storage.list(Cat.class);
+        System.out.println(cats);
 
         for (Cat cat : cats) {
-            storage.delete(cat);
+            System.out.println(storage.delete(cat));
         }
-
         cats = storage.list(Cat.class);
+        System.out.println(cats);
         if (!cats.isEmpty()) throw new Exception("Cats should not be in database!");
 
         for (int i = 1; i <= 20; i++) {
@@ -50,9 +40,17 @@ public class Application {
             cat.setAge(i);
             storage.save(cat);
         }
-
         cats = storage.list(Cat.class);
+        System.out.println(cats);
         if (cats.size() != 20) throw new Exception("Number of cats in storage should be 20!");
+
+        for (int i = 1; i <= 20; i++) {
+            Cat cat = new Cat();
+            cat.setId(i + 120);
+            cat.setName("cat." + i);
+            cat.setAge(i + 2);
+            storage.save(cat);
+        }
 
         User user = new User();
         user.setAdmin(true);
@@ -74,7 +72,7 @@ public class Application {
 
         User user3 = storage.get(User.class, user.getId());
 
-        if (user3 != null) throw new Exception("User should be deleted!");*/
+        if (user3 != null) throw new Exception("User should be deleted!");
     }
 
     private static DataSource createDataSource(Environment env) {

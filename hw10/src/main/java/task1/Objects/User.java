@@ -1,10 +1,12 @@
 package task1.Objects;
 
 import task1.Annotations.Ignore;
+import task1.Annotations.Table;
 import task1.Entity;
 
 import java.time.LocalDate;
 
+@Table(name="users")
 public class User extends Entity {
 
     private String name;
