@@ -6,9 +6,15 @@ import java.lang.reflect.Field;
 
 public class TableColumnResolver {
 
-    public <T extends Entity> Field resolveField(String raw, Class<T> clazz) {
+    public <T extends Entity> Field resolveField(String fieldName, Class<T> clazz) {
         Field[] fields = clazz.getDeclaredFields();
-        return fields[0];
+        Field returnedField = null;
+        for (Field field : fields) {
+            if (resolve(field).equals(fieldName)) {
+                returnedField = field;
+            }
+        }
+        return returnedField;
     }
 
     public String resolve(Field field) {

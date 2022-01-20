@@ -25,13 +25,11 @@ public class Application {
             storage.save(cat);
         }
         List<Cat> cats = storage.list(Cat.class);
-        System.out.println(cats);
 
         for (Cat cat : cats) {
-            System.out.println(storage.delete(cat));
+            storage.delete(cat);
         }
         cats = storage.list(Cat.class);
-        System.out.println(cats);
         if (!cats.isEmpty()) throw new Exception("Cats should not be in database!");
 
         for (int i = 1; i <= 20; i++) {
@@ -41,16 +39,7 @@ public class Application {
             storage.save(cat);
         }
         cats = storage.list(Cat.class);
-        System.out.println(cats);
         if (cats.size() != 20) throw new Exception("Number of cats in storage should be 20!");
-
-        for (int i = 1; i <= 20; i++) {
-            Cat cat = new Cat();
-            cat.setId(i + 120);
-            cat.setName("cat." + i);
-            cat.setAge(i + 2);
-            storage.save(cat);
-        }
 
         User user = new User();
         user.setAdmin(true);

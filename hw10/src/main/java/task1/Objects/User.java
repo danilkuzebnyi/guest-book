@@ -6,7 +6,7 @@ import task1.Entity;
 
 import java.time.LocalDate;
 
-@Table(name="users")
+@Table(name = "users")
 public class User extends Entity {
 
     private String name;

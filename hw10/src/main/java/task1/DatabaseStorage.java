@@ -2,25 +2,24 @@ package task1;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import task1.Annotations.Ignore;
-
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class DatabaseStorage implements Storage {
 
-    private final DataSource dataSource;
-    private final org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final TableNameResolver tableNameResolver = new TableNameResolver();
     private final TableColumnResolver tableColumnResolver = new TableColumnResolver();
-    private Map<String, Object> fieldsAndTheirValues = new HashMap<>();
 
-    public DatabaseStorage(DataSource dataSource) throws SQLException {
-        this.dataSource = dataSource;
+    public DatabaseStorage(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -47,39 +46,55 @@ public class DatabaseStorage implements Storage {
     }
 
     @Override
-    public <T extends Entity> void save(T entity) throws StorageException, IllegalAccessException {
+    public <T extends Entity> void save(T entity) throws IllegalAccessException {
         Class<? extends Entity> clazz = entity.getClass();
-        fieldsAndTheirValues = prepareEntity(entity);
-        Field[] fields = clazz.getDeclaredFields();
-        int id = entity.getId();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            if (field.isAnnotationPresent(Ignore.class)) {
-                continue;
-            }
-            if (!entity.isNew()) {
-                jdbcTemplate.update("UPDATE " + tableNameResolver.resolve(clazz) + " SET " +
-                        tableColumnResolver.resolve(field) + " = '" +
-                        fieldsAndTheirValues.get(tableColumnResolver.resolve(field)) + "' WHERE id = ?", id);
-            } else if (entity.isNew()) {
-                List<String> columnElements = Arrays.stream(fields).map(Field::getName).collect(Collectors.toList());
-                String columnElement = String.join(", ", columnElements);
-                int numberOfColumns = fields.length;
-                String questionMarkElement = IntStream.range(0, numberOfColumns)
-                        .mapToObj(index -> "?")
-                        .collect(Collectors.joining(", "));
-                jdbcTemplate.update("INSERT INTO " + tableNameResolver.resolve(clazz) + "(" + columnElement + ") VALUES("
-                        + questionMarkElement + ")", fields[0].get(entity), fields[1].get(entity));
+        Map<String, Object> fieldsAndTheirValues = prepareEntity(entity);
+
+        if (entity.isNew()) {
+            List<String> columnNames = new ArrayList<>(fieldsAndTheirValues.keySet());
+            String columnName = String.join(", ", columnNames);
+            int numberOfColumns = fieldsAndTheirValues.size();
+
+            String questionMarkElement = IntStream.range(0, numberOfColumns)
+                    .mapToObj(index -> "?")
+                    .collect(Collectors.joining(", "));
+
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            String SQL = "INSERT INTO " + tableNameResolver.resolve(clazz)
+                    + "(" + columnName + ") VALUES(" + questionMarkElement + ") RETURNING id";
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(SQL,
+                        Statement.RETURN_GENERATED_KEYS);
+                for (int i = 0; i < fieldsAndTheirValues.size(); i++) {
+                    Field field = tableColumnResolver.resolveField(columnNames.get(i), clazz);
+                    ps.setObject(i + 1, fieldsAndTheirValues.get(tableColumnResolver.resolve(field)));
+                }
+                return ps;
+            }, keyHolder);
+            entity.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
+        }
+        if (!entity.isNew()) {
+            int id = entity.getId();
+            for (String fieldName : fieldsAndTheirValues.keySet()) {
+                jdbcTemplate.update("UPDATE " + tableNameResolver.resolve(clazz) + " SET " + fieldName
+                        + " = '" + fieldsAndTheirValues.get(fieldName) + "' WHERE id = ?", id);
             }
         }
     }
 
+
     private <T extends Entity> Map<String, Object> prepareEntity(T entity) throws IllegalAccessException {
+        Map<String, Object> fieldsAndTheirValues = new HashMap<>();
         Class<? extends Entity> clazz = entity.getClass();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            field.setAccessible(true);
-            fieldsAndTheirValues.put(field.getName(), field.get(entity));
+            if (field.isAnnotationPresent(Ignore.class)) {
+                continue;
+            } else {
+                field.setAccessible(true);
+                fieldsAndTheirValues.put(tableColumnResolver.resolve(field), field.get(entity));
+                field.setAccessible(false);
+            }
         }
         return fieldsAndTheirValues;
     }
