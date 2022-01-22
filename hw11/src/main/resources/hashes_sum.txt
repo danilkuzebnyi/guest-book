@@ -1,0 +1,10 @@
+https://www.booking.com = f02ff3998879f0c71800bdd9d9740269
+https://translate.google.com.ua = c69dcd00e9362078373d674bd3879629
+https://docs.google.com/document/u/0/ = 0e6b371b318bbe913e07cca553fbc9bc
+https://best.aliexpress.ru = a211010000de7f13b7f966820db5387b
+https://stackoverflow.com = 7f4c919540be6ec81cd37d9e61da6c37
+https://www.baeldung.com = 719221beb2ffb896cc283955137608a0
+https://github.com = 3097fca9b1ec8942c4305e550ef1b50a
+https://rozetka.com.ua = b3c5db9fff068b094424f763c11cf760
+https://www.foxtrot.com.ua = eaa3ad2ff10942dcb3c15ab68237de7a
+https://comfy.ua = d5ac7588cf60374fcc70d52b6d4e92f1
