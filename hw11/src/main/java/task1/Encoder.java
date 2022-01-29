@@ -4,7 +4,7 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Md5Hash {
+public class Encoder {
 
     public void calculateMd5Hash() {
         String sourceFile = "hw11/src/main/resources/links.txt";

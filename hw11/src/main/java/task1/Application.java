@@ -7,33 +7,19 @@ public class Application {
     public static void main(String[] args) {
         ExecutorService executor = Executors.newFixedThreadPool(3);
 
-        Md5Hash md5Hash = new Md5Hash();
-
         Runnable hash1 = () -> {
-            md5Hash.calculateMd5Hash();
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException ex) {
-                throw new IllegalStateException(ex);
-            }
+            Encoder md5Hash1 = new Encoder();
+            md5Hash1.calculateMd5Hash();
         };
 
         Runnable hash2 = () -> {
-            md5Hash.calculateMd5Hash();
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException ex) {
-                throw new IllegalStateException(ex);
-            }
+            Encoder md5Hash2 = new Encoder();
+            md5Hash2.calculateMd5Hash();
         };
 
         Runnable hash3 = () -> {
-            md5Hash.calculateMd5Hash();
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException ex) {
-                throw new IllegalStateException(ex);
-            }
+            Encoder md5Hash3 = new Encoder();
+            md5Hash3.calculateMd5Hash();
         };
 
         executor.submit(hash1);
@@ -42,5 +28,4 @@ public class Application {
 
         executor.shutdown();
     }
-
 }
