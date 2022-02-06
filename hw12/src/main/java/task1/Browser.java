@@ -8,33 +8,33 @@ import java.util.*;
 
 public class Browser {
 
-    public Document getWebsiteHtml(int page) throws IOException {
-        final String URL = "https://www.gettyimages.com/photos/travel?assettype=image&license=rf" +
-                "&alloweduse=availableforalluses&embeddable=true&family=creative" +
-                "&phrase=travel&sort=best&page=" + page;
-
-        return Jsoup.connect(URL).get();
-    }
-
-    public List<String> getLinksOf200BestPhotos() throws IOException {
-        List<String> linksOf200BestPhotos = new ArrayList<>();
+    public List<String> getLinksOfBestPhotos(int qtyOfPhotos) throws IOException {
+        List<String> links = new ArrayList<>();
         int page = 1;
-        while (linksOf200BestPhotos.size() < 200) {
+        while (links.size() < qtyOfPhotos) {
             Document document = getWebsiteHtml(page);
             Elements images = document.getElementsByTag("img");
             for (Element image : images) {
                 String link = image.attr("src");
                 if (doesImageHaveLink(link)) {
-                    linksOf200BestPhotos.add(link);
+                    links.add(link);
                 }
-                if (linksOf200BestPhotos.size() == 200) {
+                if (links.size() == qtyOfPhotos) {
                     break;
                 }
             }
             page++;
         }
 
-        return linksOf200BestPhotos;
+        return links;
+    }
+
+    public Document getWebsiteHtml(int page) throws IOException {
+        final String URL = "https://www.gettyimages.com/photos/travel?assettype=image&license=rf" +
+                "&alloweduse=availableforalluses&embeddable=true&family=creative" +
+                "&phrase=travel&sort=best&page=" + page;
+
+        return Jsoup.connect(URL).get();
     }
 
     private boolean doesImageHaveLink(String link) {
