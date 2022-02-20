@@ -1,11 +1,7 @@
 package javacode;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public abstract class Tyre {
-    @Value("21")
     private int size;
-    @Value("winter")
     private String name;
 
     public int getSize() {

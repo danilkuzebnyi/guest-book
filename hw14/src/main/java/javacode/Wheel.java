@@ -15,7 +15,7 @@ public class Wheel {
     }
 
     @Autowired
-    @Qualifier("winterTyre")
+    @Qualifier("summerTyre")
     public void setTyre(Tyre tyre) {
         this.tyre = tyre;
     }
