@@ -33,10 +33,10 @@
     </form><br>
 
     <#if booksSize!=0>
-        <table border="1px">
+        <table class="table-bordered">
             <h2>Guest Book</h2>
             <thead>
-                <tr class="w3-red">
+                <tr class="active">
                     <th style="text-align:center"> name </th>
                     <th style="text-align:center"> message </th>
                     <th style="text-align:center"> rating </th>

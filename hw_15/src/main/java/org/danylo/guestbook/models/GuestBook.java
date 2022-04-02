@@ -2,27 +2,15 @@ package org.danylo.guestbook.models;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Component
 @Scope("prototype")
-@Entity
-@Table(name = "books")
 public class GuestBook {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     private String name;
     private String message;
     private int rating;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+    private LocalDateTime dateTime = LocalDateTime.now();
 
     public String getName() {
         return name;
@@ -46,5 +34,13 @@ public class GuestBook {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 }
